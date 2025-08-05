@@ -35,4 +35,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/register", async (req, res) => {
+  const { name, email, password, address, city, regState, phone } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const [result] = await db.query(
+      "INSERT INTO register (name, email, password, address, city, regState, phone) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, email, hashedPassword, address, city, regState, phone]
+    );
+    res.send(result);
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;
