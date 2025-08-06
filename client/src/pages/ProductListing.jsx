@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/NavBar";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading starts as true
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -13,11 +15,11 @@ const ProductList = () => {
       .then((res) => {
         console.log("API response:", res.data);
         setProducts(res.data);
-        setLoading(false); // Data loaded
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching products:", err);
-        setLoading(false); // Stop loading even on error
+        setLoading(false);
       });
   }, []);
 
@@ -30,7 +32,6 @@ const ProductList = () => {
         </h2>
 
         {loading ? (
-          // Loader container outside of the grid, filling available space, centered both ways
           <div
             className="flex items-center justify-center"
             style={{ minHeight: "60vh" }}
@@ -38,12 +39,14 @@ const ProductList = () => {
             <ClipLoader color="#ec4899" size={50} />
           </div>
         ) : Array.isArray(products) && products.length > 0 ? (
-          // Only render grid when not loading & have products
           <div className="grid gap-8 justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
               <div
                 key={product.id}
-                className="bg-white hover:bg-gray-100 hover:scale-105 border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 min-h-[350px] w-full"
+                onClick={() => {
+                  navigate(`/productDescription/${product.id}`);
+                }}
+                className="bg-white hover:bg-gray-100 hover:scale-105 border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 min-h-[350px] w-full "
               >
                 <img
                   src={`/Product_Images/${product.image}`}
