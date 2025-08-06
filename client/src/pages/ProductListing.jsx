@@ -1,0 +1,75 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Navbar from "../components/NavBar";
+import ClipLoader from "react-spinners/ClipLoader";
+
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading starts as true
+
+  useEffect(() => {
+    axios
+      .get("/api/products")
+      .then((res) => {
+        console.log("API response:", res.data);
+        setProducts(res.data);
+        setLoading(false); // Data loaded
+      })
+      .catch((err) => {
+        console.error("Error fetching products:", err);
+        setLoading(false); // Stop loading even on error
+      });
+  }, []);
+
+  return (
+    <>
+      <Navbar />
+      <div className="pt-24 px-6 bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 min-h-screen">
+        <h2 className="text-3xl font-extrabold mb-8 text-gray-800 text-center tracking-tight">
+          Product List
+        </h2>
+
+        {loading ? (
+          // Loader container outside of the grid, filling available space, centered both ways
+          <div
+            className="flex items-center justify-center"
+            style={{ minHeight: "60vh" }}
+          >
+            <ClipLoader color="#ec4899" size={50} />
+          </div>
+        ) : Array.isArray(products) && products.length > 0 ? (
+          // Only render grid when not loading & have products
+          <div className="grid gap-8 justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white hover:bg-gray-100 hover:scale-105 border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 min-h-[350px] w-full"
+              >
+                <img
+                  src={`/Product_Images/${product.image}`}
+                  alt={product.name}
+                  className="w-full h-60 object-cover rounded-lg mb-4"
+                />
+                <h3 className="text-lg font-semibold text-pink-700 mb-2 text-center">
+                  {product.name}
+                </h3>
+                <p className="text-gray-800 font-bold mb-4 text-center">
+                  ₹{product.price}
+                </p>
+                <button className="mt-auto bg-gradient-to-r from-pink-600 to-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:from-pink-500 hover:to-red-400 transition">
+                  Add to Cart
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 italic text-center w-full">
+            No products found.
+          </p>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default ProductList;

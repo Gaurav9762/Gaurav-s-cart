@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import "./index.css";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
+import ProductList from "./pages/ProductListing";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </ProtectedRoute>
         }
       />
+      <Route path="/products" element={<ProductList />} />
       <Route path="/register" element={<Register />} />
     </Routes>
   </Router>
