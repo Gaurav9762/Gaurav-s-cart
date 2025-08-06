@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single product by ID
 router.get("/getSingleProduct/:id", async (req, res) => {
   const { id } = req.params;
   try {
