@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/NavBar";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
@@ -39,7 +38,6 @@ const Register = () => {
   };
   return (
     <>
-      <Navbar></Navbar>
       <div className="pt-16 justify-center flex items-center min-h-screen">
         <form
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"

@@ -1,35 +1,81 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout"; // path to Layout component
 import App from "./App";
 import Login from "./pages/Login";
-
-import "./index.css";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import ProductList from "./pages/ProductListing";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ProductDescription from "./pages/ProductDescription";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { CartProvider } from "./context/CartContext";
+import "./index.css";
+import Cart from "./pages/cart";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Router>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/products" element={<ProductList />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/productDescription/:productId"
-        element={<ProductDescription />}
-      />
-    </Routes>
-  </Router>
+  <CartProvider>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <App />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout>
+              <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            </Layout>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <Layout>
+              <ProductList />
+            </Layout>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Layout>
+              <Register />
+            </Layout>
+          }
+        />
+        <Route
+          path="/productDescription/:productId"
+          element={
+            <Layout>
+              <ProductDescription />
+            </Layout>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <Layout>
+              <Cart />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
+  </CartProvider>
 );

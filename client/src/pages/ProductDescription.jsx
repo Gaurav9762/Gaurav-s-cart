@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/NavBar";
+import { useCart } from "../context/CartContext";
 
 const ProductDescription = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     axios
@@ -20,7 +21,6 @@ const ProductDescription = () => {
 
   return (
     <>
-      <Navbar />
       {product ? (
         <div className="pt-24 p-8 flex flex-col lg:flex-row gap-10">
           <img
@@ -34,7 +34,10 @@ const ProductDescription = () => {
             <p className="text-2xl font-bold text-gray-900 mb-4">
               ₹{product.price}
             </p>
-            <button className="bg-gradient-to-r from-pink-600 to-red-500 text-white px-6 py-2 rounded-lg hover:from-pink-500 hover:to-red-400 transition">
+            <button
+              onClick={() => addToCart(product)}
+              className="bg-gradient-to-r from-pink-600 to-red-500 text-white px-6 py-2 rounded-lg hover:from-pink-500 hover:to-red-400 transition"
+            >
               Add to Cart
             </button>
           </div>
