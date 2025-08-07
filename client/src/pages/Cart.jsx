@@ -12,9 +12,9 @@ const Cart = () => {
         Shopping Cart
       </h2>
       {cartItems.length === 0 ? (
-        <div className="text-gray-600">
+        <div className="text-gray-600 items-center pt-20 text-center text-xl ">
           Your cart is empty.{" "}
-          <Link to="/" className="text-blue-500 underline">
+          <Link to="/products" className="text-blue-500 underline">
             Go shopping
           </Link>
         </div>

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import logoPic from "../assets/image.png";
+import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const token = localStorage.getItem("token");
+  const { cartItems } = useCart();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -20,6 +23,7 @@ const Navbar = () => {
       "
     >
       <div className="container mx-auto flex justify-between items-center">
+        {/* Logo */}
         <a
           href="/Dashboard"
           className="text-3xl font-extrabold text-indigo-600 hover:text-indigo-700 transition p-2 rounded-full"
@@ -51,7 +55,7 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Nav Links + Login/Logout */}
+        {/* Navigation Links */}
         <ul
           className={`md:flex md:items-center md:space-x-8 absolute md:static w-1/2 md:w-auto right-0 md:left-auto shadow-lg top-16 md:top-auto transition-all duration-300 ease-in bg-gradient-to-r from-purple-800 via-pink-600 to-red-600 ${
             isOpen ? "flex flex-col space-y-2 px-6 py-4" : "hidden"
@@ -61,13 +65,14 @@ const Navbar = () => {
             <li key={item}>
               <a
                 href="#"
-                className="block px-2 py-1 text-white hover:text-pink-300 hover:underline right:0transition font-medium"
+                className="block px-2 py-1 text-white hover:text-pink-300 hover:underline transition font-medium"
               >
                 {item}
               </a>
             </li>
           ))}
 
+          {/* Auth Button */}
           <li className="md:px-0 w-full md:w-auto">
             {token ? (
               <button
@@ -86,6 +91,22 @@ const Navbar = () => {
             )}
           </li>
         </ul>
+
+        {/* Cart Icon */}
+        <div className="relative ml-4">
+          <Link
+            to="/cart"
+            className="text-white text-3xl hover:text-pink-200 transition"
+            title="View Cart"
+          >
+            🛒
+          </Link>
+          {cartItems.length > 0 && (
+            <span className="absolute -top-1 -right-2 bg-purple-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+              {cartItems.length}
+            </span>
+          )}
+        </div>
       </div>
     </nav>
   );
