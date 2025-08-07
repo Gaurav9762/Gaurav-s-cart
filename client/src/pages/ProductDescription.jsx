@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const ProductDescription = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const { addToCart } = useCart();
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`/api/products/getSingleProduct/${productId}`)
@@ -35,7 +36,13 @@ const ProductDescription = () => {
               ₹{product.price}
             </p>
             <button
-              onClick={() => addToCart(product)}
+              onClick={() => {
+                addToCart({
+                  ...product,
+                  image: `/Product_Images/${product.image}`,
+                });
+                navigate("/cart");
+              }}
               className="bg-gradient-to-r from-pink-600 to-red-500 text-white px-6 py-2 rounded-lg hover:from-pink-500 hover:to-red-400 transition"
             >
               Add to Cart

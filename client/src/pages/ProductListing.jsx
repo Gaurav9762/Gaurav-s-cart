@@ -47,7 +47,7 @@ const ProductList = () => {
                 <img
                   src={`/Product_Images/${product.image}`}
                   alt={product.name}
-                  onClick={() => navigate(`/productDescription/${product.id}`)} // 👈 move click here
+                  onClick={() => navigate(`/productDescription/${product.id}`)}
                   className="w-full h-60 object-cover rounded-lg mb-4 cursor-pointer"
                 />
                 <h3
@@ -60,7 +60,13 @@ const ProductList = () => {
                   ₹{product.price}
                 </p>
                 <button
-                  onClick={() => addToCart(product)}
+                  onClick={() => {
+                    addToCart({
+                      ...product,
+                      image: `/Product_Images/${product.image}`,
+                    });
+                    navigate("/cart");
+                  }}
                   className="mt-auto bg-gradient-to-r from-pink-600 to-red-500 text-white font-semibold px-4 py-2 rounded-lg hover:from-pink-500 hover:to-red-400 transition"
                 >
                   Add to Cart
