@@ -1,16 +1,17 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, getTotalPrice } =
     useCart();
-
+  const navigate = useNavigate();
   return (
     <div className="pt-20 px-4 max-w-full sm:max-w-xl md:max-w-3xl mx-auto">
       <h2 className="text-3xl font-bold mb-6 items-center text-center text-gray-800">
         Shopping Cart
       </h2>
+      {console.log("cart items", cartItems)}
       {cartItems.length === 0 ? (
         <div className="text-gray-600 items-center pt-20 text-center text-xl ">
           Your cart is empty.{" "}
@@ -70,7 +71,12 @@ const Cart = () => {
             <h3 className="text-xl font-semibold">
               Total: ₹{getTotalPrice().toFixed(2)}
             </h3>
-            <button className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-500">
+            <button
+              className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-500"
+              onClick={() => {
+                navigate("/checkout");
+              }}
+            >
               Checkout
             </button>
           </div>
