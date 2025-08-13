@@ -13,6 +13,7 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (product) => {
+    // console.log("Adding to cart:", product);
     const isInCart = cartItems.find((item) => item.id === product.id);
     if (isInCart) {
       alert("Item already in cart");

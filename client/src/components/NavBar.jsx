@@ -64,7 +64,7 @@ const Navbar = () => {
           {["Home", "About", "Services", "Contact"].map((item) => (
             <li key={item}>
               <a
-                href="#"
+                href="/products"
                 className="block px-2 py-1 text-white hover:text-pink-300 hover:underline transition font-medium"
               >
                 {item}

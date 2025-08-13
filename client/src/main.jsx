@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { CartProvider } from "./context/CartContext";
 import "./index.css";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CartProvider>
@@ -72,6 +73,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           element={
             <Layout>
               <Cart />
+            </Layout>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <Layout>
+              <Checkout />
             </Layout>
           }
         />
