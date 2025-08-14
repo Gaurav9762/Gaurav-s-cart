@@ -3,28 +3,39 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import ProductFilterBar from "../components/ProductFilterBar";
+import NotificationPopup from "./NotificationPopup";
 
 const ProductList = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
+
   const { addToCart } = useCart();
   useEffect(() => {
     axios
       .get("/api/products")
       .then((res) => {
-        console.log("API response:", res.data);
         setProducts(res.data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Error fetching products:", err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
+
+    const timer = setTimeout(() => {
+      setShowNotification(true); // This updates the state after 2 sec
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
+      {showNotification && (
+        <NotificationPopup onClose={() => setShowNotification(false)} />
+      )}
+
+      <ProductFilterBar></ProductFilterBar>
       <div className="pt-24 px-6 bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 min-h-screen">
         <h2 className="text-3xl font-extrabold mb-8 text-gray-800 text-center tracking-tight">
           Product List
@@ -49,6 +60,7 @@ const ProductList = () => {
                   alt={product.name}
                   onClick={() => navigate(`/productDescription/${product.id}`)}
                   className="w-full h-60 object-cover rounded-lg mb-4 cursor-pointer"
+                  loading="lazy"
                 />
                 <h3
                   className="text-lg font-semibold text-pink-700 mb-2 text-center cursor-pointer"
