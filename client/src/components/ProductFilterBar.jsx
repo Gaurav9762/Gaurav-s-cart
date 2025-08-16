@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const ProductFilterBar = ({ onFilterChange }) => {
   // Why useState? → useState allows us to store and update component-specific data (form values) without reloading.
@@ -6,6 +6,10 @@ const ProductFilterBar = ({ onFilterChange }) => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+
+  useEffect(() => {
+    handleFilterChange();
+  }, [category, minPrice, maxPrice, sortOrder]);
 
   // Whenever any filter changes, we call the parent's callback
   const handleFilterChange = () => {
@@ -37,7 +41,6 @@ const ProductFilterBar = ({ onFilterChange }) => {
           <option value="electronics">Electronics</option>
           <option value="home">Home & Living</option>
         </select>
-
         {/* Price Range Filter */}
         <div className="flex items-center gap-2">
           <input
@@ -62,13 +65,18 @@ const ProductFilterBar = ({ onFilterChange }) => {
             className="w-28 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
-
         {/* Sort Dropdown */}
         <select
           value={sortOrder}
           onChange={(e) => {
-            setSortOrder(e.target.value);
-            handleFilterChange();
+            const newSort = e.target.value;
+            setSortOrder(newSort);
+            onFilterChange({
+              category,
+              minPrice,
+              maxPrice,
+              sortOrder: newSort,
+            });
           }}
           className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
@@ -77,8 +85,7 @@ const ProductFilterBar = ({ onFilterChange }) => {
           <option value="priceHighLow">Price: High to Low</option>
           <option value="newest">Newest Arrivals</option>
         </select>
-
-        {/* Reset Filters Button */}
+        ;{/* Reset Filters Button */}
         <button
           onClick={handleReset}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
