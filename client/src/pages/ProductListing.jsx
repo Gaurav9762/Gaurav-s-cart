@@ -11,6 +11,12 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
+  const [filters, setFilters] = useState({
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    sortOrder: "",
+  });
 
   const { addToCart } = useCart();
   useEffect(() => {
@@ -23,19 +29,56 @@ const ProductList = () => {
       .catch(() => setLoading(false));
 
     const timer = setTimeout(() => {
-      setShowNotification(true); // This updates the state after 2 sec
+      setShowNotification(true);
     }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
+  const getFilteredProducts = () => {
+    let updatedProducts = [...products];
+
+    // Category filter
+    if (filters.category) {
+      updatedProducts = updatedProducts.filter(
+        (p) => p.category.toLowerCase() === filters.category.toLowerCase()
+      );
+    }
+
+    // Price filter
+    if (filters.minPrice) {
+      updatedProducts = updatedProducts.filter(
+        (p) => p.price >= Number(filters.minPrice)
+      );
+    }
+    if (filters.maxPrice) {
+      updatedProducts = updatedProducts.filter(
+        (p) => p.price <= Number(filters.maxPrice)
+      );
+    }
+
+    // Sorting
+    console.log("Object.values(inventory)", filters.sortOrder);
+
+    if (filters.sortOrder === "priceLowHigh") {
+      updatedProducts.sort((a, b) => a.price - b.price);
+    } else if (filters.sortOrder === "priceHighLow") {
+      updatedProducts.sort((a, b) => b.price - a.price);
+    } else if (filters.sortOrder === "newest") {
+      updatedProducts.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    }
+
+    return updatedProducts;
+  };
 
   return (
     <>
-      {showNotification && (
+      {/* {showNotification && (
         <NotificationPopup onClose={() => setShowNotification(false)} />
-      )}
+      )} */}
 
-      <ProductFilterBar></ProductFilterBar>
+      <ProductFilterBar onFilterChange={setFilters} />
       <div className="pt-24 px-6 bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 min-h-screen">
         <h2 className="text-3xl font-extrabold mb-8 text-gray-800 text-center tracking-tight">
           Product List
@@ -50,7 +93,7 @@ const ProductList = () => {
           </div>
         ) : Array.isArray(products) && products.length > 0 ? (
           <div className="grid gap-8 justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
+            {getFilteredProducts().map((product) => (
               <div
                 key={product.id}
                 className="bg-white hover:bg-gray-100 hover:scale-105 border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 flex flex-col items-center p-4 min-h-[350px] w-full"
