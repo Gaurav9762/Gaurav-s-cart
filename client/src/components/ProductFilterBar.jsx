@@ -85,7 +85,6 @@ const ProductFilterBar = ({ onFilterChange }) => {
           <option value="priceHighLow">Price: High to Low</option>
           <option value="newest">Newest Arrivals</option>
         </select>
-        ;{/* Reset Filters Button */}
         <button
           onClick={handleReset}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"

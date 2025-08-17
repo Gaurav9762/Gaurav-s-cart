@@ -40,9 +40,13 @@ const ProductList = () => {
     // Category filter
     if (filters.category) {
       updatedProducts = updatedProducts.filter(
-        (p) => p.category.toLowerCase() === filters.category.toLowerCase()
+        (p) =>
+          p.category &&
+          p.category.toLowerCase() === filters.category.toLowerCase()
       );
     }
+
+    //worked on main for category logic commit before reating new branch
 
     // Price filter
     if (filters.minPrice) {
@@ -71,7 +75,7 @@ const ProductList = () => {
 
     return updatedProducts;
   };
-
+  console.log("products", products);
   return (
     <>
       {/* {showNotification && (
