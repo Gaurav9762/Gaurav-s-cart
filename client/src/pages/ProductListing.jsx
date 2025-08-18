@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import ProductFilterBar from "../components/ProductFilterBar";
 import NotificationPopup from "./NotificationPopup";
 
 const ProductList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get("search") || "";
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showNotification, setShowNotification] = useState(false);
   const [filters, setFilters] = useState({
     category: "",
     minPrice: "",
@@ -18,22 +21,16 @@ const ProductList = () => {
     sortOrder: "",
   });
 
-  const { addToCart } = useCart();
   useEffect(() => {
+    setLoading(true);
     axios
-      .get("/api/products")
+      .get(`/api/products?search=${searchQuery}`)
       .then((res) => {
         setProducts(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-
-    const timer = setTimeout(() => {
-      setShowNotification(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  }, [searchQuery]);
   const getFilteredProducts = () => {
     let updatedProducts = [...products];
 
@@ -107,7 +104,7 @@ const ProductList = () => {
                   alt={product.name}
                   onClick={() => navigate(`/productDescription/${product.id}`)}
                   className="w-full h-60 object-cover rounded-lg mb-4 cursor-pointer"
-                  loading="lazy"
+                  loading="eager"
                 />
                 <h3
                   className="text-lg font-semibold text-pink-700 mb-2 text-center cursor-pointer"

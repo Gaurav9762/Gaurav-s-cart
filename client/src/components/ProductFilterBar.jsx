@@ -25,9 +25,8 @@ const ProductFilterBar = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="fixed top-16 left-0 w-full bg-white shadow-md border-b border-gray-200 z-50">
+    <div className="fixed top-16 left-0 w-full bg-white shadow-md border-b border-gray-200 z-30">
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap gap-4 items-center justify-between">
-        {/* Category Filter */}
         <select
           value={category}
           onChange={(e) => {

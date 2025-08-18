@@ -2,10 +2,20 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// GET all products
 router.get("/", async (req, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM products");
+    const search = req.query.search || "";
+
+    let results;
+    if (search) {
+      [results] = await db.query(
+        "SELECT * FROM products WHERE name LIKE ? OR description LIKE ?",
+        [`%${search}%`, `%${search}%`]
+      );
+    } else {
+      [results] = await db.query("SELECT * FROM products");
+    }
+
     res.json(results);
   } catch (err) {
     console.error("Error fetching products:", err);
