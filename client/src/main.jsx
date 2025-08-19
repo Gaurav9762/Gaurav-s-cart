@@ -13,6 +13,7 @@ import { CartProvider } from "./context/CartContext";
 import "./index.css";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import AdminPage from "./pages/AdminPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <CartProvider>
@@ -84,6 +85,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </Layout>
           }
         />
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <ProtectedRoute>
+                <AdminPage />
+              </ProtectedRoute>
+            </Layout>
+          }
+        ></Route>
       </Routes>
     </Router>
   </CartProvider>

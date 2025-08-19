@@ -19,6 +19,8 @@ router.post("/login", async (req, res) => {
     }
 
     const user = rows[0];
+    // console.log("user", user);
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -28,7 +30,10 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({ token, user: { id: user.id, email: user.email } });
+    res.json({
+      token,
+      user: { id: user.id, email: user.email, isAdmin: user.isAdmin },
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
