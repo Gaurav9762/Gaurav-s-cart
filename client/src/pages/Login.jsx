@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import Dashboard from "./Dashboard";
+import AdminPage from "./AdminPage";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,9 +22,14 @@ const Login = () => {
       });
 
       const data = await response.json();
+      console.log("isadmin data", data);
 
-      if (response.ok) {
-        console.log("Login successful:", data);
+      if (response.ok && data.user.isAdmin) {
+        // console.log("Login successful:", data, "data.token", response);
+        localStorage.setItem("token", data.token);
+        navigate("/admin");
+      } else if (response.ok) {
+        // console.log("Login successful:", data, "data.token", response);
         localStorage.setItem("token", data.token);
         navigate("/dashboard");
       } else {
