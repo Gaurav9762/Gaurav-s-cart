@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from "react";
 
 const ProductFilterBar = ({ onFilterChange }) => {
-  // Why useState? → useState allows us to store and update component-specific data (form values) without reloading.
   const [category, setCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     handleFilterChange();
   }, [category, minPrice, maxPrice, sortOrder]);
 
-  // Whenever any filter changes, we call the parent's callback
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset;
+
+    const handleScroll = () => {
+      const currentScrollY = window.pageYOffset;
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleFilterChange = () => {
     onFilterChange({ category, minPrice, maxPrice, sortOrder });
   };
@@ -25,7 +44,11 @@ const ProductFilterBar = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="fixed top-16 left-0 w-full bg-white shadow-md border-b border-gray-200 z-30">
+    <div
+      className={`fixed top-16 left-0 w-full bg-white shadow-md border-b border-gray-200 z-30 transform transition-transform duration-300 ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap gap-4 items-center justify-between">
         <select
           value={category}
@@ -40,7 +63,7 @@ const ProductFilterBar = ({ onFilterChange }) => {
           <option value="electronics">Electronics</option>
           <option value="home">Home & Living</option>
         </select>
-        {/* Price Range Filter */}
+
         <div className="flex items-center gap-2">
           <input
             type="number"
@@ -64,7 +87,7 @@ const ProductFilterBar = ({ onFilterChange }) => {
             className="w-28 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
-        {/* Sort Dropdown */}
+
         <select
           value={sortOrder}
           onChange={(e) => {
@@ -84,6 +107,7 @@ const ProductFilterBar = ({ onFilterChange }) => {
           <option value="priceHighLow">Price: High to Low</option>
           <option value="newest">Newest Arrivals</option>
         </select>
+
         <button
           onClick={handleReset}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
