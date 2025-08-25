@@ -41,18 +41,16 @@ router.get("/getSingleProduct/:id", async (req, res) => {
   }
 });
 
-// POST create new product
 router.post("/addProduct", async (req, res) => {
-  const { name, description, price, image } = req.body;
-
+  const { name, description, price, image, category } = req.body;
   if (!name || !price) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
     const [result] = await db.query(
-      "INSERT INTO products (name, description, price, image) VALUES (?, ?, ?, ?)",
-      [name, description, price, image]
+      "INSERT INTO products (name, description, price, image, category) VALUES (?, ?, ?, ?, ?)",
+      [name, description, price, image, category]
     );
     res
       .status(201)
@@ -63,7 +61,6 @@ router.post("/addProduct", async (req, res) => {
   }
 });
 
-// PUT update product
 router.put("/updateProduct/:id", async (req, res) => {
   const { id } = req.params;
   const { name, description, price, image } = req.body;
@@ -81,7 +78,6 @@ router.put("/updateProduct/:id", async (req, res) => {
   }
 });
 
-// DELETE product
 router.delete("/deleteProduct/:id", async (req, res) => {
   const { id } = req.params;
 

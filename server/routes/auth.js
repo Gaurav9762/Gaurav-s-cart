@@ -39,7 +39,14 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+router.get("/users", async (req, res) => {
+  try {
+    const users = await db.query("SELECT * FROM register");
+    res.json(users);
+  } catch (err) {
+    console.log(err);
+  }
+});
 router.post("/register", async (req, res) => {
   const { name, email, password, address, city, regState, phone } = req.body;
   try {
