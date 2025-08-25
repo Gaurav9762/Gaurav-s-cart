@@ -10,7 +10,6 @@ const Checkout = () => {
         Checkout
       </h2>
 
-      {/* Order Summary */}
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-2">Order Summary</h3>
         {cartItems.map((item) => (
@@ -20,7 +19,7 @@ const Checkout = () => {
           >
             <div className="flex items-center gap-3">
               <img
-                src={item.image} // Assuming `item.image` has the image URL
+                src={item.image}
                 alt={item.name}
                 className="w-12 h-12 object-cover rounded"
               />

@@ -6,22 +6,72 @@ const AdminPage = () => {
   const [error, setError] = useState(null);
   const [newProduct, setNewProduct] = useState({});
   const [newProductFlag, setNewProductFlag] = useState(false);
+  const [users, setUsers] = useState([]);
+
   const addProductRef = useRef(null);
 
+  const handleSaveNewProduct = async () => {
+    if (!newProduct.name || !newProduct.price) {
+      alert("Please fill in the required fields: Name and Price");
+      return;
+    }
+
+    try {
+      const productToSave = {
+        ...newProduct,
+        price: parseFloat(newProduct.price),
+        description: newProduct.description || "",
+        image: newProduct.image || "",
+        category: newProduct.category || "",
+      };
+
+      const response = await axios.post(
+        "/api/products/addProduct",
+        productToSave
+      );
+
+      if (response.status === 201) {
+        alert("Product added successfully!");
+        setNewProductFlag(false);
+        setNewProduct({ name: "", price: "", description: "", image: "" });
+
+        const refreshRes = await axios.get("/api/products");
+        setProducts(refreshRes.data);
+      } else {
+        alert("Failed to add product.");
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Error occurred while adding product.");
+    }
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    let isMounted = true;
+
+    const fetchData = async () => {
       try {
-        const response = await axios.get("/api/products");
-        setProducts(response.data);
-        console.log("Fetched products:", response.data);
+        const [productsRes, usersRes] = await Promise.all([
+          axios.get("/api/products"),
+          axios.get("/api/users"),
+        ]);
+
+        if (isMounted) {
+          setProducts(productsRes.data);
+          setUsers(usersRes.data[0] || usersRes.data);
+        }
       } catch (err) {
-        setError(err.message || "Failed to fetch products");
-        console.error("Error fetching products:", err);
+        if (isMounted) setError(err.message || "Failed to fetch data");
       }
     };
 
-    fetchProducts();
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
   useEffect(() => {
     const onClickOutside = (event) => {
       if (
@@ -73,10 +123,6 @@ const AdminPage = () => {
                           : "N/A"}
                       </p>
                     </div>
-                    {/* Placeholder for future buttons */}
-                    <div>
-                      {/* Example Edit/Delete buttons can be added here */}
-                    </div>
                   </div>
                 ))}
               </div>
@@ -104,9 +150,37 @@ const AdminPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <section className="bg-gray-50 rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">👥 Users</h2>
-            <div className="border rounded-lg bg-white h-40 flex items-center justify-center text-gray-400">
-              Users table/list goes here
-            </div>
+
+            {error ? (
+              <p className="text-red-500 mb-4">{error}</p>
+            ) : users.length === 0 ? (
+              <p className="text-gray-500 mb-4">No users available.</p>
+            ) : (
+              <div className="overflow-y-auto max-h-64 border rounded-lg bg-white p-4 space-y-3">
+                {users.map((user) => (
+                  <div
+                    key={user.id}
+                    className="border p-3 rounded shadow-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <span className="text-gray-500">
+                        Name :
+                        <span className="font-semibold text-gray-800">
+                          {" " + user.name}
+                        </span>
+                      </span>
+
+                      <p className=" text-gray-500">
+                        Phone:
+                        <span className="font-semibold text-gray-800">
+                          {" " + user.phone}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             <button className="mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded hover:bg-purple-700">
               Manage Users
             </button>
@@ -157,6 +231,49 @@ const AdminPage = () => {
               min="0"
               step="0.01"
             />
+            <label className="block mb-2 font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={newProduct.description || ""}
+              onChange={(e) =>
+                setNewProduct((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
+              className="w-full p-2 border rounded mb-4"
+              placeholder="Enter product description"
+            />
+
+            <label className="block mb-2 font-medium text-gray-700">
+              Image URL
+            </label>
+            <input
+              type="text"
+              name="image"
+              value={newProduct.image || ""}
+              onChange={(e) =>
+                setNewProduct((prev) => ({ ...prev, image: e.target.value }))
+              }
+              className="w-full p-2 border rounded mb-4"
+              placeholder="Enter image URL"
+            />
+            <label className="block mb-2 font-medium text-gray-700">
+              Product Cateory
+            </label>
+            <input
+              type="text"
+              name="category"
+              value={newProduct.category || ""}
+              onChange={(e) =>
+                setNewProduct((prev) => ({ ...prev, category: e.target.value }))
+              }
+              className="w-full p-2 border rounded mb-4"
+              placeholder="Enter Product Cateory "
+            />
+
             <input type="file" name="image"></input>
 
             <div className="flex justify-end space-x-4">
@@ -168,9 +285,7 @@ const AdminPage = () => {
               </button>
 
               <button
-                onClick={() => {
-                  /* Save handler to be implemented */
-                }}
+                onClick={handleSaveNewProduct}
                 className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
               >
                 Save
