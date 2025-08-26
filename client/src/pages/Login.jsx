@@ -4,6 +4,8 @@ import Button from "../components/Button";
 import Dashboard from "./Dashboard";
 import AdminPage from "./AdminPage";
 import { useNavigate } from "react-router-dom";
+import Chat from "../components/Chat";
+import ChatSupportWrapper from "../components/ChatSupportWrapper";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -86,6 +88,7 @@ const Login = () => {
           </button>
         </form>
       </div>
+      <ChatSupportWrapper></ChatSupportWrapper>
     </>
   );
 };
